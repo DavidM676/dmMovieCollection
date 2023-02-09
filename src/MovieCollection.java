@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class MovieCollection {
@@ -173,6 +174,22 @@ public class MovieCollection {
       listToSort.set(possibleIndex, temp);
     }
   }
+
+  private void sortResultsStringandMovie(ArrayList<String> listToSort, ArrayList<Movie> listTore) {
+    for (int j = 1; j < listToSort.size(); j++) {
+      String tempTitle = listToSort.get(j);
+      Movie tempM = listTore.get(j);
+
+      int possibleIndex = j;
+      while (possibleIndex > 0 && tempTitle.compareTo(listToSort.get(possibleIndex - 1)) < 0) {
+        listToSort.set(possibleIndex, listToSort.get(possibleIndex - 1));
+        listTore.set(possibleIndex, listTore.get(possibleIndex - 1));
+        possibleIndex--;
+      }
+      listToSort.set(possibleIndex, tempTitle);
+      listTore.set(possibleIndex, tempM);
+    }
+  }
   
   private void displayMovieInfo(Movie movie) {
     System.out.println();
@@ -193,7 +210,38 @@ public class MovieCollection {
   }
 
   private void searchCast() {
-    search("cast");
+    System.out.print("Enter a search term: ");
+    String searchTerm = scanner.nextLine();
+    searchTerm = searchTerm.toLowerCase();
+    ArrayList<Movie> cast = new ArrayList<>();
+    ArrayList<String> castName = new ArrayList<>();
+
+    for (int i = 0; i< movies.size(); i++) {
+      String castLst = movies.get(i).getCast();
+      castLst = "|"+castLst+"|";
+      int lastIdx = 1;
+
+      for (int j = 1; j<castLst.length(); j++) {
+        if (castLst.charAt(j) == '|') {
+          String name = castLst.substring(lastIdx, j);
+
+          if (name.toLowerCase().contains(searchTerm)) {
+            if (!(castName.contains(name))) {
+              cast.add(movies.get(i));
+              castName.add(name);
+            } else
+          }
+          lastIdx = j+1;
+        }
+      }
+
+    }
+    sortResultsStringandMovie(castName, cast);
+    System.out.println(castName);
+
+    for (int i = 0; i<castName.size(); i++) {
+      System.out.println(i+1+". "+castName.get(i));
+    }
     /* TASK 4: IMPLEMENT ME */
   }
   
